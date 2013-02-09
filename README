@@ -1,12 +1,13 @@
-Power management tools
-----------------------
+ Power management tools
+========================
 This is a small collection of power management test and
 investigation tools.  See http://lesswatts.org/projects/acpi/
 for more information on ACPI for Linux.
 
-./turbostat/turbostat
---------------------
-man turbostat/turbostat.8
+NOTICE: This repository continues the (vanished) project from 
+http://ftp.kernel.org/pub/linux/kernel/people/lenb/acpi/
+version 20110323 and tries to include new versions and patches
+for, but not exclusive to, Gentoo Linux.
 
 ./acpidump/acpidump
 -------------------
@@ -38,18 +39,6 @@ Convert ASCII acpidump output to raw binary tables:
 	Acpi table [RSDP] -     20 bytes written to RSDP.dat
 
 
-Disassembler
-------------
-Convert binary table into human readable form
-iasl can be downloaded from Intel:
-http://www.intel.com/technology/IAPC/acpi/downloads.htm
-
-Which creates DSDT.dsl this way:
-
-	$ iasl -a *.dat
-	...
-	creates *.dsl
-
 pmtest -- does not work
 ------
 This utility can be used by Linux kernel developers to test
@@ -59,8 +48,19 @@ the module.
 
 Example: pmtest -d3 VGA
 
+madt
+----
+
+User utility to parse the ACPI MADT
+
+
 Change Log
-----------
+==========
+
+20130209
+	applied Gentoo patches
+	removed turbostat, available from kernel tree
+		or sys-apps/linux-misc-apps
 20110323
 	turbostat from 2.6.38 kernel tree
 20101221

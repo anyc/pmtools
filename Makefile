@@ -1,4 +1,4 @@
-DIRS = acpidump acpixtract madt turbostat
+DIRS = acpidump acpixtract madt
 
 all:
 	for i in $(DIRS); do $(MAKE) -C $$i $@; done
