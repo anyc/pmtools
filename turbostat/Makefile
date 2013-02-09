@@ -1,3 +1,5 @@
+all : turbostat
+
 turbostat : turbostat.c
 
 clean :

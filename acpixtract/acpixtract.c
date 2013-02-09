@@ -120,7 +120,7 @@
 #include <string.h>
 #include <ctype.h>
 
-#define VERSION             0x20060324
+#define VERSION             0x20110323
 
 #define FIND_HEADER         0
 #define EXTRACT_DATA        1
@@ -199,7 +199,7 @@ DisplayUsage (
     void)
 {
 
-    printf ("Usage: acpixtract [option] <InputFile>\n");
+    printf ("Usage: acpixtract-pmtools [option] <InputFile>\n");
     printf ("\nExtract binary ACPI tables from text acpidump output\n");
     printf ("Default invocation extracts all DSDTs and SSDTs\n");
     printf ("Version %8.8X\n\n", VERSION);

@@ -6,7 +6,7 @@ CFLAGS+= -Wall -O2 -D_LINUX -DACPI_APPLICATION -Wstrict-prototypes -I../../inclu
 all: $(PROG)
 
 $(PROG) : $(SRCS)
-	$(CC) $(CFLAGS) $(SRCS) -o $(PROG)
+	$(CC) $(CFLAGS) $(LDFLAGS) $(SRCS) -o $(PROG)
 
 CLEANFILES= $(PROG)
 

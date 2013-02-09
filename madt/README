@@ -1,7 +1,7 @@
 User utility to parse the ACPI MADT
 Hacked out of Linux kernel code to do the same.
 
-# ./acpidmp | ./acpixtract APIC | ./madt
+# ./acpidmp | ./acpixtract-pmtools APIC | ./madt
 
 ACPI: APIC (v001 INTEL  D845EBT2 0x20021021 MSFT 0x00000097) @ 0x(nil)
 ACPI: LAPIC (acpi_id[0x01] lapic_id[0x00] enabled)

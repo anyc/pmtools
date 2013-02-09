@@ -26,8 +26,6 @@ typedef unsigned long long u64;
 
 #define printk printf
 
-#include "./tables.c"
-
 //#define INPUT_FILE "madt.dat"
 //#include <sys/types.h>
 //#include <sys/stat.h>
@@ -36,6 +34,8 @@ typedef unsigned long long u64;
 //#include <sys/mman.h>
 #include <stdio.h> // fread
 #include <stdlib.h> // malloc
+
+#include "./tables.c"
 
 int verbose = 0;
 /*
@@ -46,7 +46,7 @@ get_next_entry(acpi_table_entry_header * entry_header)
 {
 	size_t retval;
 
-	if (verbose) printf("reading %d byte entry header\n", sizeof(acpi_table_entry_header));
+	if (verbose) printf("reading %ld byte entry header\n", sizeof(acpi_table_entry_header));
 	retval = fread((void *)entry_header, sizeof(acpi_table_entry_header), 1, stdin);
 	return retval;
 }
@@ -64,7 +64,7 @@ main()
 
 	bytes_read = csum = 0;
 
-	if (verbose) printf("reading %d madt header\n", sizeof(struct acpi_table_madt));
+	if (verbose) printf("reading %ld madt header\n", sizeof(struct acpi_table_madt));
 
 	retval = fread((void *)buffer, sizeof(struct acpi_table_madt), 1, stdin);
 	if (retval != 1) {

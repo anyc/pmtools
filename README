@@ -17,11 +17,11 @@ to attach to a bug report for later examination:
 
     # ./acpidump > acpidump.out
 
-./acpidump/acpixtract
---------------------
+./acpidump/acpixtract-pmtools
+-----------------------------
 Convert ASCII acpidump output to raw binary tables:
 
-	$ acpixtract/acpixtract -a acpidump.out
+	$ acpixtract/acpixtract-pmtools -a acpidump.out
 	Acpi table [DSDT] -  15974 bytes written to DSDT.dat
 	Acpi table [FACS] -     64 bytes written to FACS.dat
 	Acpi table [FACP] -    116 bytes written to FACP.dat
