@@ -1,0 +1,77 @@
+Power management tools
+----------------------
+This is a small collection of power management test and
+investigation tools.  See http://lesswatts.org/projects/acpi/
+for more information on ACPI for Linux.
+
+./turbostat/turbostat
+--------------------
+man turbostat/turbostat.8
+
+./acpidump/acpidump
+-------------------
+This utility dumps a system's ACPI tables to an ASCII file.
+
+Typically it is used to dump all the ACPI tables
+to attach to a bug report for later examination:
+
+    # ./acpidump > acpidump.out
+
+./acpidump/acpixtract
+--------------------
+Convert ASCII acpidump output to raw binary tables:
+
+	$ acpixtract/acpixtract -a acpidump.out
+	Acpi table [DSDT] -  15974 bytes written to DSDT.dat
+	Acpi table [FACS] -     64 bytes written to FACS.dat
+	Acpi table [FACP] -    116 bytes written to FACP.dat
+	Acpi table [APIC] -    120 bytes written to APIC.dat
+	Acpi table [WDDT] -     64 bytes written to WDDT.dat
+	Acpi table [MCFG] -     60 bytes written to MCFG.dat
+	Acpi table [ASF!] -    166 bytes written to ASF!.dat
+	Acpi table [SSDT] -    444 bytes written to SSDT1.dat
+	Acpi table [SSDT] -    439 bytes written to SSDT2.dat
+	Acpi table [SSDT] -    439 bytes written to SSDT3.dat
+	Acpi table [SSDT] -    439 bytes written to SSDT4.dat
+	Acpi table [SSDT] -    439 bytes written to SSDT5.dat
+	Acpi table [RSDT] -     76 bytes written to RSDT.dat
+	Acpi table [RSDP] -     20 bytes written to RSDP.dat
+
+
+Disassembler
+------------
+Convert binary table into human readable form
+iasl can be downloaded from Intel:
+http://www.intel.com/technology/IAPC/acpi/downloads.htm
+
+Which creates DSDT.dsl this way:
+
+	$ iasl -a *.dat
+	...
+	creates *.dsl
+
+pmtest -- does not work
+------
+This utility can be used by Linux kernel developers to test
+power management support in their drivers.  It consists of
+an installable kernel module and a Perl script to drive
+the module.
+
+Example: pmtest -d3 VGA
+
+Change Log
+----------
+20110323
+	turbostat from 2.6.38 kernel tree
+20101221
+	acpidump: read /sys/firmware/acpi/dynamic/*
+20101124
+	turbostat: add SNB counter support
+20100123
+	add turbostat program
+	acpixtract: change %6d printf conversion string %6zd 
+	tweak this README
+
+20070511
+	delete acpitbl script
+	it is obsoleted by iasl -d

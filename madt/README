@@ -1,0 +1,15 @@
+User utility to parse the ACPI MADT
+Hacked out of Linux kernel code to do the same.
+
+# ./acpidmp | ./acpixtract APIC | ./madt
+
+ACPI: APIC (v001 INTEL  D845EBT2 0x20021021 MSFT 0x00000097) @ 0x(nil)
+ACPI: LAPIC (acpi_id[0x01] lapic_id[0x00] enabled)
+ACPI: LAPIC_NMI (acpi_id[0x01] polarity[0x0] trigger[0x0] lint[0x1])
+ACPI: LAPIC (acpi_id[0x02] lapic_id[0x01] enabled)
+ACPI: LAPIC_NMI (acpi_id[0x02] polarity[0x0] trigger[0x0] lint[0x1])
+ACPI: INT_SRC_OVR (bus[0] irq[0x0] global_irq[0x2] polarity[0x0] trigger[0x0])
+ACPI: INT_SRC_OVR (bus[0] irq[0x9] global_irq[0x9] polarity[0x1] trigger[0x3])
+ACPI: IOAPIC (id[0x02] address[0xfec00000] global_irq_base[0x0])
+Length 104 OK
+Checksum OK

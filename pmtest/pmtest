@@ -1,0 +1,201 @@
+#!/usr/bin/perl
+#
+# pmtest - driver power management tester
+#
+
+($ME = $0) =~ s|.*/||;
+
+$PM_MODULE = "pmtest.o";
+$PM_PROC = "/proc/driver/pmtest";
+$PM_DEVICE_LIST = "$PM_PROC/devices";
+$PM_DEVICE_CTRL = "$PM_PROC/control";
+
+%pm_types = (0, "unknown",
+	     1, "system",
+	     2, "PCI",
+	     3, "USB",
+	     4, "SCSI",
+	     5, "ISA");
+$PM_SYS_DEV = 1;
+%pm_sys_ids = (0x41d00303, "keyboard",
+	       0x41d00500, "serial",
+	       0x41d00510, "IRDA",
+	       0x41d00700, "floppy",
+	       0x41d00900, "VGA",
+	       0x41d00e00, "PCMCIA");
+
+$cmd = shift(@ARGV);
+if($cmd =~ m/^-[dD](\d)$/)
+{
+    #
+    # resume/suspend selected device
+    #
+    my($state) = int($1);
+    my($type, $id) = &get_type_id($ARGV[0], $ARGV[1]);
+    if(&load_module)
+    {
+	if(open(PROC, "> $PM_DEVICE_CTRL"))
+	{
+	    print PROC sprintf("%d 0x%x %d\n", $type, $id, $state);
+	    close(PROC);
+	}
+	else
+	{
+	    print "$ME: $PM_DEVICE_CTRL: $!\n";
+	    exit(1);
+	}
+	&unload_module;
+    }
+}
+elsif(!$cmd || $cmd =~ m/^-l/)
+{
+    #
+    # list selected device(s)
+    #
+    my($match_type, $match_id) = &get_type_id($ARGV[0], $ARGV[1]);
+    if(&load_module)
+    {
+	if(open(PROC, $PM_DEVICE_LIST))
+	{
+	    while(<PROC>)
+	    {
+		my($type, $id, $state) = split(/\s+/);
+		$type = int($type);
+		$id = hex($id);
+		$state = int($state);
+
+		if((!$match_type || $type == $match_type)
+		   && (!$match_id || $id == $match_id))
+		{
+		    &print_type_id_state($type, $id, $state);
+		}
+	    }
+	    close(PROC);
+	}
+	else
+	{
+	    print "$ME: $PM_DEVICE_LIST: $!\n";
+	    exit(1);
+	}
+	&unload_module;
+    }
+}
+else
+{
+    print "Usage: $ME [OPTION] [TYPE] [ID]\n";
+    print "  -l                   list devices (default)\n";
+    print "  -d0                  resume device (ACPI D0)\n";
+    print "  -d1, -d2, -d3        suspend device (ACPI D1-D3)\n";
+    print "\nExamples:\n";
+    print "  $ME -l PCI           list all registered PCI devices\n";
+    print "  $ME -d0 VGA          resume (unblank) the console\n";
+    print "  $ME -d3 PCI 0x1234   suspend a PCI device\n";
+    exit(1);
+}
+
+exit(0);
+
+#
+# Parse device type and ID from the command line
+#
+sub
+get_type_id
+{
+    local($type, $id) = @_;
+    my($key, $value);
+    my($sys) = 0;
+
+    $type = uc($type);
+    $id = uc($id);
+
+    while(($key, $value) = each(%pm_sys_ids))
+    {
+	if(uc($value) eq $type)
+	{
+	    $type = $PM_SYS_DEV;
+	    $id = $key;
+	    $sys = 1;
+	    last;
+	}
+    }
+
+    if(!$sys)
+    {
+	while(($key, $value) = each(%pm_types))
+	{
+	    if(uc($value) eq $type)
+	    {
+		$type = int($key);
+		$id = hex(lc($id));
+		last;
+	    }
+	}
+    }
+
+    return ($type, $id);
+}
+
+#
+# Output device type, ID, and suspend state
+#
+sub
+print_type_id_state
+{
+    local($type, $id, $state) = @_;
+    if($type == $PM_SYS_DEV && $pm_sys_ids{$id})
+    {
+	print "  $pm_sys_ids{$id} (D$state)\n";
+    }
+    else
+    {
+	print sprintf("  $pm_types{$type} 0x%x (D$state)\n", $id);
+    }
+}
+
+#
+# Find and load the kernel module
+#
+sub
+load_module
+{
+    if(! -d $PM_PROC)
+    {
+	#
+        # hopefully, pmtest.o is in the same directory as pmtest
+	#
+	my($path) = $0;
+	$path =~ s|(.*)/.*|$1|;
+	$path = "." if(!$path);
+	$path = "$path/$PM_MODULE";
+
+	if(! -f $path)
+	{
+	    print "$ME: cannot find $path\n";
+	    exit(1);
+	}
+
+	print `insmod $path 2>&1`;
+	if($? >> 8)
+	{
+	    print "$ME: cannot load kernel module (running as root?)\n";
+	    exit(1);
+	}
+    }
+    return 1;
+}
+
+#
+# Unload the kernel module
+#
+sub
+unload_module
+{
+    if(-d $PM_PROC)
+    {
+	my($mod) = $PM_MODULE;
+	$mod =~ s|\.o$||;
+	`rmmod $mod 2>&1`;
+	return !($? >> 8);
+    }
+    return 1;
+}
