@@ -631,6 +631,8 @@ ExtractTables (
  *
  ******************************************************************************/
 
+#define D_INT(H, I) ((H)[I] | (H)[(I)+1] << 8 | (H)[(I)+2] << 16 | (H)[(I)+3] << 24)
+
 int
 ListTables (
     char                    *InputPathname)
@@ -691,7 +693,7 @@ ListTables (
         /* Signature and Table length */
 
         TableCount++;
-        printf ("%8.4s % 7d", Header, *(int *) &Header[4]);
+        printf ("%8.4s % 7d", Header, D_INT(Header, 4));
 
         /* FACS has only signature and length */
 
@@ -708,8 +710,8 @@ ListTables (
         CheckAscii (&Header[28], 4);
 
         printf ("  \"%6.6s\"  \"%8.8s\"    %8.8X    \"%4.4s\"     %8.8X\n",
-            &Header[10], &Header[16], *(int *) &Header[24],
-            &Header[28], *(int *) &Header[32]);
+            &Header[10], &Header[16], D_INT(Header, 24),
+            &Header[28], D_INT(Header, 32));
     }
 
     printf ("\nFound %d ACPI tables [%8.8X]\n", TableCount, VERSION);
